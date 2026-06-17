@@ -9,9 +9,9 @@ issue_tracker: https://github.com/Osama0habib/hubspot_mobile_chat/issues
 topics:
   - hubspot
   - chat
-  - livechat
-  - messaging
   - customer-support
+  - messaging
+  - flutter-plugin
 
 environment:
   sdk: ^3.10.8

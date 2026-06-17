@@ -16,7 +16,7 @@ class _MyAppState extends State<MyApp> {
   final _hubspot = HubspotMobileChat.instance;
   final _emailCtrl = TextEditingController(text: 'visitor@example.com');
   final _tokenCtrl = TextEditingController();
-  final _flowCtrl = TextEditingController(text: 'qanoniah-mobile');
+  final _flowCtrl = TextEditingController(text: '');
   String _status = 'Not initialized';
   StreamSubscription<PushData>? _pushSub;
 

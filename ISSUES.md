@@ -6,17 +6,17 @@ Running log of open issues to fix later. Status: 🔴 open · 🟡 needs-info ·
 
 ## I-001 🟡 iOS chat: "The system isn't responding to your request right now"
 
-- **Where**: iOS sim, Open Chat (portal `25742216`, hublet `eu1`, env `prod`, flow `qanoniah-mobile`).
+- **Where**: iOS sim, Open Chat (portal `YOUR_PORTAL_ID`, hublet `eu1`, env `prod`, flow `your-chatflow`).
 - **Symptom**: `HubspotChatView` presents (shell + spinner) then shows
   "The system isn't responding to your request right now. Please try again in a minute."
 - **Assessment**: HubSpot **backend/config side**, not the plugin — configure() succeeded,
   chat view presented, SDK connected. Plugin pipeline confirmed working.
-- **Suspects**: chat flow `qanoniah-mobile` not published / not assigned to mobile SDK
+- **Suspects**: chat flow `your-chatflow` not published / not assigned to mobile SDK
   channel; hublet/environment mismatch; mobile chat not enabled for portal; transient.
 - **Next**: (1) retry; (2) clear chatFlow field → use portal default; (3) verify flow is
   published + targeted to mobile in HubSpot; (4) confirm hublet `eu1` matches portal.
 - **2026-06-17 narrowed**: blank chatFlow → SDK shows "Missing Chat Flow"; named
-  `qanoniah-mobile` → "system isn't responding". So plugin forwards chatFlow correctly;
+  `your-chatflow` → "system isn't responding". So plugin forwards chatFlow correctly;
   backend rejects the named flow. Cause is HubSpot-side: flow not published / not connected
   to a channel, OR hublet/region mismatch (plist `eu1`). Verify hublet via browser login URL
   (`app.hubspot.com`=na1, `app-eu1.hubspot.com`=eu1) and confirm flow published for mobile.
