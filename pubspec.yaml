@@ -2,7 +2,7 @@ name: hubspot_mobile_chat
 description: >-
   A Flutter wrapper around the HubSpot Mobile Chat SDKs for Android and iOS —
   configure, identify visitors, open live chat, and receive push notifications.
-version: 0.0.1
+version: 1.0.0
 homepage: https://github.com/Osama0habib/hubspot_mobile_chat
 repository: https://github.com/Osama0habib/hubspot_mobile_chat
 issue_tracker: https://github.com/Osama0habib/hubspot_mobile_chat/issues
