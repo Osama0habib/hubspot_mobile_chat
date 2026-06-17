@@ -3,12 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>portalId</key>
-	<string>25742216</string>
+	<string>xxxxxxx</string>
 	<key>hublet</key>
-	<string>eu1</string>
+	<string>xxxxx</string>
 	<key>environment</key>
-	<string>prod</string>
+	<string>xxxx</string>
 	<key>defaultChatFlow</key>
-	<string>qanoniah-mobile</string>
+	<string>xxxxxxx</string>
 </dict>
 </plist>
