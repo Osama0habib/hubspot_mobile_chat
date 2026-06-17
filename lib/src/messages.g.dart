@@ -15,7 +15,11 @@ PlatformException _createConnectionError(String channelName) {
   );
 }
 
-List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
+List<Object?> wrapResponse({
+  Object? result,
+  PlatformException? error,
+  bool empty = false,
+}) {
   if (empty) {
     return <Object?>[];
   }
@@ -37,11 +41,7 @@ enum ChatPropertyKey {
 /// Incoming chat push payload. native -> Dart on receipt; Dart -> native into
 /// [HubspotHostApi.openChat] when a notification is tapped.
 class PushData {
-  PushData({
-    this.messageId,
-    this.threadId,
-    this.raw,
-  });
+  PushData({this.messageId, this.threadId, this.raw});
 
   String? messageId;
 
@@ -50,11 +50,7 @@ class PushData {
   Map<String?, String?>? raw;
 
   Object encode() {
-    return <Object?>[
-      messageId,
-      threadId,
-      raw,
-    ];
+    return <Object?>[messageId, threadId, raw];
   }
 
   static PushData decode(Object result) {
@@ -67,7 +63,6 @@ class PushData {
   }
 }
 
-
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -75,10 +70,10 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is ChatPropertyKey) {
+    } else if (value is ChatPropertyKey) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    }    else if (value is PushData) {
+    } else if (value is PushData) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
     } else {
@@ -89,10 +84,10 @@ class _PigeonCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 129: 
+      case 129:
         final int? value = readValue(buffer) as int?;
         return value == null ? null : ChatPropertyKey.values[value];
-      case 130: 
+      case 130:
         return PushData.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -106,9 +101,13 @@ class HubspotHostApi {
   /// Constructor for [HubspotHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  HubspotHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-      : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  HubspotHostApi({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) : pigeonVar_binaryMessenger = binaryMessenger,
+       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
 
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
@@ -117,12 +116,14 @@ class HubspotHostApi {
 
   /// Initialize the SDK from the bundled config file. Throws on missing/invalid config.
   Future<void> configure() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.configure$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.configure$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_channel.send(null) as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -140,14 +141,17 @@ class HubspotHostApi {
 
   /// Associate the chat session with a HubSpot contact. Pass-through token.
   Future<void> setUserIdentity(String email, String identityToken) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.setUserIdentity$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.setUserIdentity$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final List<Object?>? pigeonVar_replyList =
-        await pigeonVar_channel.send(<Object?>[email, identityToken]) as List<Object?>?;
+        await pigeonVar_channel.send(<Object?>[email, identityToken])
+            as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -163,12 +167,14 @@ class HubspotHostApi {
 
   /// Set custom chat properties for the current app session.
   Future<void> setChatProperties(Map<String, String> properties) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.setChatProperties$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.setChatProperties$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_channel.send(<Object?>[properties]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -187,14 +193,17 @@ class HubspotHostApi {
   /// Present the HubSpot chat UI. Optional [chatFlow] targets a flow; optional
   /// [pushData] opens the conversation referenced by a tapped notification.
   Future<void> openChat(String? chatFlow, PushData? pushData) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.openChat$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.openChat$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final List<Object?>? pigeonVar_replyList =
-        await pigeonVar_channel.send(<Object?>[chatFlow, pushData]) as List<Object?>?;
+        await pigeonVar_channel.send(<Object?>[chatFlow, pushData])
+            as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
@@ -210,12 +219,14 @@ class HubspotHostApi {
 
   /// Forward an app-obtained FCM/APNs token to the SDK.
   Future<void> registerPushToken(String token) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.registerPushToken$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.registerPushToken$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_channel.send(<Object?>[token]) as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -233,12 +244,14 @@ class HubspotHostApi {
 
   /// Clear stored identity and properties for future sessions.
   Future<void> logout() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.logout$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.hubspot_mobile_chat.HubspotHostApi.logout$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_channel.send(null) as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -262,29 +275,44 @@ abstract class HubspotFlutterApi {
 
   void onNewMessagePush(PushData data);
 
-  static void setUp(HubspotFlutterApi? api, {BinaryMessenger? binaryMessenger, String messageChannelSuffix = '',}) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  static void setUp(
+    HubspotFlutterApi? api, {
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) {
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty
+        ? '.$messageChannelSuffix'
+        : '';
     {
-      final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.hubspot_mobile_chat.HubspotFlutterApi.onNewMessagePush$messageChannelSuffix', pigeonChannelCodec,
-          binaryMessenger: binaryMessenger);
+      final BasicMessageChannel<Object?>
+      pigeonVar_channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.hubspot_mobile_chat.HubspotFlutterApi.onNewMessagePush$messageChannelSuffix',
+        pigeonChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
-          assert(message != null,
-          'Argument for dev.flutter.pigeon.hubspot_mobile_chat.HubspotFlutterApi.onNewMessagePush was null.');
+          assert(
+            message != null,
+            'Argument for dev.flutter.pigeon.hubspot_mobile_chat.HubspotFlutterApi.onNewMessagePush was null.',
+          );
           final List<Object?> args = (message as List<Object?>?)!;
           final PushData? arg_data = (args[0] as PushData?);
-          assert(arg_data != null,
-              'Argument for dev.flutter.pigeon.hubspot_mobile_chat.HubspotFlutterApi.onNewMessagePush was null, expected non-null PushData.');
+          assert(
+            arg_data != null,
+            'Argument for dev.flutter.pigeon.hubspot_mobile_chat.HubspotFlutterApi.onNewMessagePush was null, expected non-null PushData.',
+          );
           try {
             api.onNewMessagePush(arg_data!);
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
           }
         });
       }

@@ -10,6 +10,24 @@ chat UI, receive push notifications, and log out.
 The core chat works once you add the HubSpot config file to each native project — no other
 native code. Push notifications need a little extra app-side wiring (you own FCM/APNs).
 
+> **Disclaimer**
+>
+> This is an unofficial Flutter wrapper for HubSpot Mobile Chat SDKs.
+> It is not affiliated with, endorsed by, or sponsored by HubSpot, Inc.
+> HubSpot is a trademark of HubSpot, Inc.
+
+## Features
+
+- 🔌 One Dart API over the native Android & iOS HubSpot Mobile Chat SDKs.
+- ⚙️ Config-file-only setup for the core chat flow — no native code to write.
+- 👤 Optional visitor identification (server-generated token, pass-through).
+- 🏷️ Custom chat properties, including device-permission keys.
+- 💬 Open the native chat UI, optionally targeting a specific chat flow.
+- 🔔 Push notifications: forward your FCM/APNs token and observe new-message events.
+- 🚪 Logout to clear identity and properties.
+- 🧱 Type-safe platform channels generated with [Pigeon](https://pub.dev/packages/pigeon).
+- 🛡️ Uniform, catchable error contract (`HubspotConfigError` / `UnsupportedError`).
+
 ---
 
 ## Requirements
@@ -343,3 +361,67 @@ The Pigeon contract (`pigeons/messages.dart`) is the single source of truth; it 
 marshalling + enum mapping + the push stream; all SDK calls live in the native plugin
 classes. Never hand-edit generated files — edit the Pigeon contract and run
 `dart run pigeon --input pigeons/messages.dart`.
+
+---
+
+## Complete example
+
+A full, runnable example lives in [`example/`](example/). Minimal end-to-end usage:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:hubspot_mobile_chat/hubspot_mobile_chat.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _hubspot = HubspotMobileChat.instance;
+  String _status = 'Not initialized';
+
+  Future<void> _initAndOpen() async {
+    try {
+      await _hubspot.configure();              // required, first
+      // await _hubspot.setUserIdentity(...);  // optional, before openChat
+      await _hubspot.openChat();               // anonymous chat (portal default flow)
+      setState(() => _status = 'Chat opened');
+    } on HubspotConfigError catch (e) {
+      setState(() => _status = 'Config error: ${e.message}');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('HubSpot Mobile Chat')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(_status),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _initAndOpen,
+                child: const Text('Open Chat'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE). Copyright (c) 2025 Osama Habib.

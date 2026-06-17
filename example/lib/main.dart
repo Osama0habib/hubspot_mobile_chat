@@ -25,7 +25,9 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     // US3: observe new-message push events.
     _pushSub = _hubspot.onMessagePush.listen((push) {
-      debugPrint('[hubspot] ⇣ push thread=${push.threadId} msg=${push.messageId}');
+      debugPrint(
+        '[hubspot] ⇣ push thread=${push.threadId} msg=${push.messageId}',
+      );
       setState(() => _status = 'Push: thread=${push.threadId}');
     });
   }

@@ -9,10 +9,10 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 Flutter plugin wrapping HubSpot's native Android & iOS Mobile Chat SDKs.
                        DESC
-  s.homepage         = 'https://github.com/debuggersight/hubspot_mobile_chat'
-  s.license          = { :file => '../LICENSE' }
-  s.author           = { 'debuggersight' => 'email@example.com' }
-  s.source           = { :path => '.' }
+  s.homepage         = 'https://github.com/Osama0habib/hubspot_mobile_chat'
+  s.license          = { :type => 'MIT', :file => '../LICENSE' }
+  s.author           = { 'Osama Habib' => 'osama07abib@gmail.com' }
+  s.source           = { :http => 'https://github.com/Osama0habib/hubspot_mobile_chat' }
   s.source_files = 'hubspot_mobile_chat/Sources/hubspot_mobile_chat/**/*.swift'
   s.dependency 'Flutter'
   s.platform = :ios, '15.0'

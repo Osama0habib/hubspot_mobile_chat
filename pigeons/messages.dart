@@ -12,7 +12,8 @@ import 'package:pigeon/pigeon.dart';
     kotlinOptions: KotlinOptions(
       package: 'com.debuggersight.hubspot_mobile_chat',
     ),
-    swiftOut: 'ios/hubspot_mobile_chat/Sources/hubspot_mobile_chat/Messages.g.swift',
+    swiftOut:
+        'ios/hubspot_mobile_chat/Sources/hubspot_mobile_chat/Messages.g.swift',
     swiftOptions: SwiftOptions(),
     dartPackageName: 'hubspot_mobile_chat',
   ),
