@@ -17,12 +17,17 @@ Flutter plugin wrapping HubSpot's native Android & iOS Mobile Chat SDKs.
   s.dependency 'Flutter'
   s.platform = :ios, '15.0'
 
-  # NOTE: HubSpot's iOS Mobile Chat SDK ships via Swift Package Manager, not
-  # CocoaPods. The integrating app must add the SPM package
-  # (https://github.com/HubSpot/mobile-chat-sdk-ios) so the `HubspotMobileSDK`
-  # module resolves at build time. If/when HubSpot publishes a Pod, declare it
-  # here with an exact version, e.g.:
-  #   s.dependency 'HubspotMobileSDK', '1.0.0'
+  # IMPORTANT: HubSpot's iOS SDK is SPM-only — it has no CocoaPod.
+  # This plugin resolves HubspotMobileSDK via its own Package.swift, which only
+  # takes effect when Flutter's SPM integration is enabled:
+  #
+  #   flutter config --enable-swift-package-manager
+  #
+  # Without that flag, Xcode cannot find HubspotMobileSDK and will error:
+  #   "Unable to find module dependency: 'HubspotMobileSDK'"
+  #
+  # If HubSpot ever publishes a CocoaPod, replace with:
+  #   s.dependency 'HubspotMobileSDK', '1.0.7'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

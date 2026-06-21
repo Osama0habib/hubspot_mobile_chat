@@ -153,19 +153,35 @@ Add `google-services.json` to `android/app/` and configure FCM in your app as us
 
 ## 4. iOS setup
 
-### 4a. Enable Swift Package Manager
+### 4a. Enable Swift Package Manager ⚠️ REQUIRED
 
-HubSpot's iOS SDK ships via SPM, so the plugin uses Flutter's SPM support:
+HubSpot's iOS SDK ships **only** via Swift Package Manager — it is not on CocoaPods.
+The plugin's own `Package.swift` declares `HubspotMobileSDK` so Flutter can resolve it
+automatically, **but only when Flutter's SPM integration is enabled**.
+
+**Run this once per machine before building:**
 
 ```bash
 flutter config --enable-swift-package-manager
 ```
 
-The plugin already declares the HubSpot SDK in its own `Package.swift`, so Flutter resolves
-`HubspotMobileSDK` automatically — you don't add the package manually.
+Then do a clean pod install:
 
-> If the repo is private for your account, sign in to GitHub in
-> Xcode → Settings → Accounts so SPM can fetch it.
+```bash
+cd ios
+rm -rf Pods Podfile.lock
+pod install --repo-update
+cd ..
+```
+
+Open `ios/Runner.xcworkspace` in Xcode → **File → Packages → Resolve Package Versions**.
+
+> **Skip this step = build failure.** Omitting `--enable-swift-package-manager` means
+> Xcode cannot find `HubspotMobileSDK` and you will see:
+> `Swift Compiler Error: Unable to find module dependency: 'HubspotMobileSDK'`
+
+> If SPM cannot fetch the package, sign in to GitHub in
+> Xcode → Settings → Accounts.
 
 ### 4b. Deployment target 15.0
 
@@ -255,6 +271,18 @@ await hubspot.setChatProperties({
 Attaches custom context for agents, for the current app session. Keys are
 `ChatPropertyKey` values: `cameraPermissions`, `photoPermissions`,
 `notificationPermissions`, `locationPermissions`. Call **before** `openChat()`.
+
+#### `setCustomChatProperties(Map<String, String>)` — OPTIONAL, for arbitrary keys
+```dart
+await hubspot.setCustomChatProperties({
+  'locale': 'ar',            // pass any key the HubSpot portal is configured to read
+  'preferredLanguage': 'ar',
+});
+```
+Same as `setChatProperties` but accepts raw string keys instead of the `ChatPropertyKey`
+enum. Use this for properties not covered by the enum (e.g. locale/language). Keys are
+forwarded to the native SDK as-is — HubSpot must be configured on the portal side to
+act on them. Call **before** `openChat()`.
 
 #### `openChat({String? chatFlow, PushData? pushData})` — REQUIRED to show chat
 ```dart
@@ -371,6 +399,7 @@ try {
 | `You need to use a Theme.AppCompat theme` crash on open chat | Add the `HubspotWebActivity` theme override (step 3c). |
 | `The system isn't responding to your request right now` | HubSpot-side: wrong **hublet**/region, or the chat flow isn't **published** / not assigned to the mobile SDK. |
 | `Missing Chat Flow` | No `chatFlow` passed and no usable default — set `defaultChatFlow` in the config or pass `chatFlow`. |
+| `Unable to find module dependency: 'HubspotMobileSDK'` | Flutter's SPM integration is **not enabled**. Run `flutter config --enable-swift-package-manager`, then `cd ios && rm -rf Pods Podfile.lock && pod install --repo-update`. See step 4a. |
 | iOS "no versions of mobile-chat-sdk-ios match" | iOS SDK latest is 1.0.7; ensure SPM is enabled (step 4a). |
 
 ---

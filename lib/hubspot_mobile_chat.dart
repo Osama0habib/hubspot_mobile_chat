@@ -66,6 +66,13 @@ class HubspotMobileChat {
     return _guard(() => _api.setChatProperties(mapped));
   }
 
+  /// Set arbitrary string chat properties for the app session. Use this for
+  /// keys not covered by [ChatPropertyKey] (e.g. custom locale strings).
+  /// Keys are passed to the native SDK as-is — use HubSpot's documented
+  /// property key names.
+  Future<void> setCustomChatProperties(Map<String, String> properties) =>
+      _guard(() => _api.setChatProperties(properties));
+
   /// Present the HubSpot chat UI (FR-005). [chatFlow] optionally targets a flow;
   /// [pushData] opens the conversation referenced by a tapped notification.
   Future<void> openChat({String? chatFlow, PushData? pushData}) =>
